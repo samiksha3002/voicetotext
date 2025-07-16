@@ -1,0 +1,318 @@
+/* ==== Fonts ==== */
+@font-face {
+  font-family: "Shivaji01";
+  src: url("/public/Shivaji01.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Krutidev010";
+  src: url("/public/Krutidev010.ttf") format("truetype");
+}
+
+/* ==== Reset ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: color 0.3s ease, background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ==== Container ==== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ==== Header ==== */
+.header {
+  text-align: center;
+  padding: 80px 20px 40px;
+  color: white;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #3b82f6, #10b981);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+.logo i {
+  font-size: 40px;
+  color: white;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.header p {
+  font-size: 1.2rem;
+}
+
+/* ==== Theme Toggle ==== */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.theme-toggle i {
+  font-size: 20px;
+}
+
+/* ==== Dark Theme ==== */
+body.dark {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #f0f0f0;
+}
+body.dark .theme-toggle {
+  background: #374151;
+}
+body.dark .theme-toggle i {
+  color: #fbbf24;
+}
+
+/* ==== Card ==== */
+.main-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 40px auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* ==== Controls ==== */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+.form-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 16px;
+  background: white;
+}
+.form-control:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==== Recorder ==== */
+.record-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.record-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+.record-btn:hover {
+  transform: translateY(-2px);
+}
+.record-btn.recording {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  animation: recordPulse 1s infinite;
+}
+@keyframes recordPulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+  }
+}
+
+/* ==== Visualizer ==== */
+.visualizer-container {
+  display: flex;
+  justify-content: center;
+}
+#visualizer {
+  background: linear-gradient(45deg, #3b82f6, #10b981);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ==== Output Section ==== */
+.output-section {
+  margin-bottom: 30px;
+}
+.text-output {
+  width: 100%;
+  min-height: 200px;
+  padding: 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  resize: vertical;
+  font-family: inherit;
+}
+.text-output.font-shivaji {
+  font-family: "Shivaji01", sans-serif;
+}
+.text-output.font-krutidev {
+  font-family: "Krutidev010", sans-serif;
+}
+
+/* ==== Stats ==== */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0;
+  padding: 15px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+.stats-info {
+  font-size: 14px;
+  color: #6b7280;
+}
+.status {
+  font-weight: 500;
+  color: #3b82f6;
+}
+
+/* ==== Buttons ==== */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+}
+.btn-copy {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+.btn-download {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.btn-print {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+.btn-clear {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+.btn-save {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* ==== Notification ==== */
+.notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: #10b981;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+.notification.show {
+  transform: translateX(0);
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  .main-card {
+    padding: 20px;
+  }
+  .controls {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@font-face {
+  font-family: "KrutiDev010";
+  src: url("/public/KRDEV010.TTF") format("truetype");
+}

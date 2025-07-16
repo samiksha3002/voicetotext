@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TalknType - Advanced Voice to Text</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <i class="fas fa-microphone"></i>
+        </div>
+        <h1>TalknType</h1>
+        <p>Advanced Voice to Text Converter</p>
+      </div>
+    </header>
+    <main class="container">
+      <div class="main-card">
+        <div class="controls">
+          <div class="form-group">
+            <label class="form-label" for="languageSelect">Language</label>
+            <select class="form-control" id="languageSelect">
+              <option value="en-US">English</option>
+              <option value="hi-IN">Hindi</option>
+              <option value="mr-IN">Marathi (Unicode)</option>
+              <option value="mr-IN-shivaji">Marathi (Shivaji)</option>
+              <option value="mr-IN-krutidev">Marathi (KrutiDev)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fontSelect">Font Style</label>
+            <select class="form-control" id="fontSelect">
+              <option value="default">Default</option>
+              <option value="shivaji">Shivaji</option>
+              <option value="krutidev">KrutiDev</option>
+            </select>
+          </div>
+        </div>
+        <div class="record-section">
+          <button class="record-btn" id="recordBtn">
+            <i class="fas fa-microphone"></i>
+            <span>Start Recording</span>
+          </button>
+          <div class="visualizer-container">
+            <canvas id="visualizer" width="300" height="100"></canvas>
+          </div>
+        </div>
+        <div class="output-section">
+          <div class="form-group">
+            <label class="form-label" for="textOutput">Transcribed Text</label>
+            <textarea
+              class="form-control text-output"
+              id="textOutput"
+              placeholder="Your transcribed text will appear here..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stats-info">
+            <span id="wordCount">0</span> words |
+            <span id="charCount">0</span> characters
+          </div>
+          <div class="status" id="status">Ready</div>
+        </div>
+        <div class="actions">
+          <button class="action-btn btn-copy" id="copyBtn">
+            <i class="fas fa-copy"></i>
+            <span>Copy</span>
+          </button>
+          <button class="action-btn btn-download" id="downloadBtn">
+            <i class="fas fa-download"></i>
+            <span>Download</span>
+          </button>
+          <button class="action-btn btn-print" id="printBtn">
+            <i class="fas fa-print"></i>
+            <span>Print</span>
+          </button>
+          <button class="action-btn btn-clear" id="clearBtn">
+            <i class="fas fa-trash"></i>
+            <span>Clear</span>
+          </button>
+          <button class="action-btn btn-save" id="saveBtn">
+            <i class="fas fa-save"></i>
+            <span>Save</span>
+          </button>
+        </div>
+      </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+      function reorderMatras(text) {
+        return text.replace(
+          /([\u0915-\u0939][\u094d]?[\u0915-\u0939]?)\u093f/g,
+          "\u093f$1"
+        );
+      }
+
+      function UnicodeToShivaji(text) {
+        const map = {
+          अ: "v",
+          आ: "vk",
+          इ: "b",
+          ई: "bZ",
+          उ: "m",
+          ऊ: "Å",
+          ए: ",",
+          ऐ: "_",
+          ओ: "vks",
+          औ: "vkS",
+          "ा": "k",
+          "ि": "f",
+          "ी": "h",
+          "ु": "q",
+          "ू": "w",
+          "े": "s",
+          "ै": "S",
+          "ो": "ks",
+          "ौ": "kS",
+          "ं": "M+",
+          "ः": ":",
+          क: "d",
+          ख: "[k",
+          ग: "x",
+          घ: "?k",
+          च: "p",
+          छ: "N",
+          ज: "t",
+          झ: ">",
+          ञ: "¥",
+          ट: "V",
+          ठ: "B",
+          ड: "M",
+          ढ: "<",
+          ण: ".k",
+          त: "r",
+          थ: "Fk",
+          द: "n",
+          ध: "/",
+          न: "u",
+          प: "i",
+          फ: "Q",
+          ब: "c",
+          भ: "Hk",
+          म: "e",
+          य: ";",
+          र: "j",
+          ल: "y",
+          व: "o",
+          श: "'k",
+          ष: '"k',
+          स: "l",
+          ह: "g",
+          ळ: "Y",
+          "़": "~",
+          "्": "",
+          "ृ": "=k",
+          "ॄ": "±",
+          "ॅ": "¡",
+          "ॉ": "¢",
+          "ौ": "ks",
+          "ै": "S",
+        };
+        const reordered = reorderMatras(text);
+        return reordered
+          .split("")
+          .map((char) => map[char] || char)
+          .join("");
+      }
+
+      function UnicodeToKrutiDev(text) {
+        const map = {
+          अ: "v",
+          आ: "vk",
+          इ: "b",
+          ई: "bZ",
+          उ: "m",
+          ऊ: "Å",
+          ए: ",",
+          ऐ: "_",
+          ओ: "vks",
+          औ: "vkS",
+          "ा": "k",
+          "ि": "f",
+          "ी": "h",
+          "ु": "q",
+          "ू": "w",
+          "े": "s",
+          "ै": "S",
+          "ो": "ks",
+          "ौ": "kS",
+          "ं": "M+",
+          "ः": ":",
+          क: "d",
+          ख: "[k",
+          ग: "x",
+          घ: "?k",
+          च: "p",
+          छ: "N",
+          ज: "t",
+          झ: ">",
+          ञ: "¥",
+          ट: "V",
+          ठ: "B",
+          ड: "M",
+          ढ: "<",
+          ण: ".k",
+          त: "r",
+          थ: "Fk",
+          द: "n",
+          ध: "/",
+          न: "u",
+          प: "i",
+          फ: "Q",
+          ब: "c",
+          भ: "Hk",
+          म: "e",
+          य: ";",
+          र: "j",
+          ल: "y",
+          व: "o",
+          श: "'k",
+          ष: '"k',
+          स: "l",
+          ह: "g",
+          ळ: "Y",
+          "़": "~",
+          "्": "",
+          "ृ": "=k",
+          "ॄ": "±",
+          "ॅ": "¡",
+          "ॉ": "¢",
+          "ौ": "ks",
+          "ै": "S",
+        };
+        const reordered = reorderMatras(text);
+        return reordered
+          .split("")
+          .map((char) => map[char] || char)
+          .join("");
+      }
+      // ========== DOM Elements ==========
+      const recordBtn = document.getElementById("recordBtn");
+      const textOutput = document.getElementById("textOutput");
+      const languageSelect = document.getElementById("languageSelect");
+      const fontSelect = document.getElementById("fontSelect");
+      const wordCount = document.getElementById("wordCount");
+      const charCount = document.getElementById("charCount");
+      const status = document.getElementById("status");
+
+      const copyBtn = document.getElementById("copyBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const printBtn = document.getElementById("printBtn");
+      const saveBtn = document.getElementById("saveBtn");
+
+      // ========== State ==========
+      let recognition;
+      let isRecording = false;
+      let fullTranscript = "";
+
+      // ========== Speech Recognition ==========
+      if (
+        "webkitSpeechRecognition" in window ||
+        "SpeechRecognition" in window
+      ) {
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+          isRecording = true;
+          status.textContent = "Listening...";
+          recordBtn.classList.add("recording");
+        };
+
+        recognition.onerror = (event) => {
+          status.textContent = `Error: ${event.error}`;
+        };
+
+        recognition.onend = () => {
+          isRecording = false;
+          status.textContent = "Stopped";
+          recordBtn.classList.remove("recording");
+        };
+
+        recognition.onresult = (event) => {
+          let interimTranscript = "";
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              fullTranscript += transcript + " ";
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          const lang = languageSelect.value;
+          const font = fontSelect.value;
+
+          let textToShow = fullTranscript + interimTranscript;
+
+          // Handle font mapping
+          if (lang.includes("shivaji") || font === "shivaji") {
+            textToShow = UnicodeToShivaji(textToShow);
+            textOutput.style.fontFamily = "Shivaji01";
+          } else if (lang.includes("krutidev") || font === "krutidev") {
+            textToShow = UnicodeToKrutiDev(textToShow);
+            textOutput.style.fontFamily = "KrutiDev010";
+          } else {
+            textOutput.style.fontFamily = "inherit";
+          }
+
+          textOutput.value = textToShow.trim();
+          updateStats(textToShow);
+        };
+      }
+
+      // ========== Button Events ==========
+      recordBtn.addEventListener("click", () => {
+        if (!recognition) return alert("Speech recognition not supported.");
+        if (isRecording) {
+          recognition.stop();
+        } else {
+          fullTranscript = textOutput.value; // resume from existing
+          recognition.lang = languageSelect.value.includes("-")
+            ? languageSelect.value
+            : "mr-IN";
+          recognition.start();
+        }
+      });
+
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(textOutput.value);
+        alert("Copied to clipboard!");
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        const blob = new Blob([textOutput.value], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "transcription.txt";
+        link.click();
+      });
+
+      printBtn.addEventListener("click", () => {
+        const w = window.open("", "_blank");
+        w.document.write(`<pre>${textOutput.value}</pre>`);
+        w.print();
+        w.close();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        fullTranscript = "";
+        textOutput.value = "";
+        updateStats("");
+      });
+
+      saveBtn.addEventListener("click", () => {
+        localStorage.setItem("talknTypeData", textOutput.value);
+        alert("Saved to local storage.");
+      });
+
+      window.addEventListener("load", () => {
+        const saved = localStorage.getItem("talknTypeData");
+        if (saved) {
+          textOutput.value = saved;
+          updateStats(saved);
+        }
+      });
+
+      // ========== Stats ==========
+      function updateStats(text) {
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        const chars = text.trim().length;
+        wordCount.textContent = words;
+        charCount.textContent = chars;
+      }
+
+      // ========== Audio Visualizer ==========
+      const canvas = document.getElementById("visualizer");
+      const ctx = canvas.getContext("2d");
+
+      let audioCtx;
+      let analyser;
+      let source;
+      let dataArray;
+      let animationId;
+
+      function startVisualizer() {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          audioCtx = new AudioContext();
+          analyser = audioCtx.createAnalyser();
+          source = audioCtx.createMediaStreamSource(stream);
+          source.connect(analyser);
+          analyser.fftSize = 256;
+          const bufferLength = analyser.frequencyBinCount;
+          dataArray = new Uint8Array(bufferLength);
+
+          function draw() {
+            animationId = requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+            ctx.fillStyle = "#111";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const barWidth = (canvas.width / bufferLength) * 2.5;
+            let x = 0;
+            for (let i = 0; i < bufferLength; i++) {
+              const barHeight = dataArray[i] / 2;
+              ctx.fillStyle = "lime";
+              ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+              x += barWidth + 1;
+            }
+          }
+
+          draw();
+        });
+      }
+
+      function stopVisualizer() {
+        if (animationId) cancelAnimationFrame(animationId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      recordBtn.addEventListener("click", () => {
+        if (isRecording) {
+          stopVisualizer();
+        } else {
+          startVisualizer();
+        }
+      });
+    </script>
+  </body>
+</html>
